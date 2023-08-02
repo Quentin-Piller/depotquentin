@@ -1,0 +1,803 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>[Docker] II. Conteneurs, Volumes &amp; Réseaux</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="5b79f8c9-8b0d-4409-a65d-c5b731f588f8" class="page sans"><header><h1 class="page-title">[Docker] II. Conteneurs, Volumes &amp; Réseaux</h1><p class="page-description"></p></header><div class="page-body"><p id="d32a4cf4-9719-4e7b-b072-4c8a0dcc64d2" class="">
+</p><nav id="739e4f7a-dc0c-43b2-b62a-f414ce5202fa" class="block-color-gray table_of_contents"><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#a230e859-6303-4987-8303-9c39b6aeee65">Rappels : commandes Bash</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#c216647e-627b-4034-9fc8-d9b16f5c4f29">Navigation et manipulation de fichiers</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#3175bc3f-13ec-4701-8bf8-9e3d18428fe9">Output et chaînage de commandes</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#5d86e5fe-890d-4588-b880-bd6672cf81c5">Redirection de commandes</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#1898a315-1eda-4ba3-a464-415a50cf4f89">Création et gestion de conteneurs</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#93576fa5-a061-4b28-8aae-128c29a51e64">Cycle de vie des conteneurs</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#7e1de3c7-913a-4824-8536-54737bd2dcfa">Principales commandes</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#20b5393c-1a0e-465d-970c-a55524b04878">A propos du cycle de vie des conteneurs</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#b40f78ea-02ad-4837-88cb-97e9fe6cddef">Créer et exécuter un conteneur avec <code>docker run</code></a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#65a7bb16-b34c-45e7-9b66-96e40a40e217">Commande principale</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#a63750bf-72b2-463e-894c-101974020b2d">Premier plan &amp; arrière plan (<em>foreground</em> &amp; <em>detached</em>)</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#d21ca741-cec4-4592-af7b-da803293e7d6">Mode interactif (TTY allocation)</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#e9f2609b-95d6-43b3-95e3-73cacc4129af">Override des défauts</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#0cca8eef-fb80-4dcf-a8ac-05b69f8d00a0">Assigner un nom au conteneur</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#adead43c-8c34-42ff-b5c7-5d1d484ca1fb">Suppression automatique après l’exécution</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#51377e13-1a7e-409e-a3c3-0b2c6b253182">Suppression manuelle</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#732d0806-2e19-4751-b042-2a8107cd62be">Inspecter les conteneurs</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#6855316b-060d-45f5-8bfa-ec3b9d56f977">Interagir avec un conteneur</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#35c2dbe0-aa15-4084-ba33-76d7e6a010db">Volumes</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#11b377ac-dc0f-4217-9e80-8aa389f20526"><em>Bind-Mount </em></a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#7dc50ce4-c6df-44bd-b192-0c149307f573"><em>Named Volumes</em></a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#a3f2e3b4-104b-428d-beaa-5f84cba091b4">Différences à l’initialisation entre <em>Bind-Mount</em> &amp; <em>Volumes</em></a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#488a6ee6-10bc-4785-b164-b16c09495ca5">Réseaux</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#da239ee5-fe62-4d98-aad5-a96368d53c36">Gestion de réseaux</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#9f09aca4-016d-47e1-8f94-e7f4b6576640">Option <code>—publish</code> de <code>docker run</code> (ou <code>-p</code>)</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#61ec7142-92ca-4cae-ba1c-656ef4c37414">Ressources supplémentaires</a></div></nav><h1 id="a230e859-6303-4987-8303-9c39b6aeee65" class="">Rappels : commandes Bash</h1><hr id="c16ed071-f568-43ae-bd30-369036daf566"/><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="0d010e08-7b30-4539-b3a2-0ecd771474eb"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">Manipuler Docker implique de manipuler Linux et donc il faut connaître quelques commandes dont certaines sont rappelées ici</div></figure><h2 id="c216647e-627b-4034-9fc8-d9b16f5c4f29" class="">Navigation et manipulation de fichiers</h2><table id="b318c2f6-336d-49a3-84e1-e56fdf8dfe99" class="simple-table"><tbody><tr id="595feb6c-0540-4b78-875b-c442c76ae90c"><td id="\}R;" class="" style="width:130px"><code>pwd</code></td><td id="znCU" class="" style="width:596px">(Print Working Directory) Affiche le répertoire actuel dans lequel vous vous trouvez</td></tr><tr id="471a2a73-3905-445a-8b9f-42718b7615e8"><td id="\}R;" class="" style="width:130px"><code>cd</code></td><td id="znCU" class="" style="width:596px">(Change Directory) Se déplacer vers un autre répertoire en utilisant un chemin absolu ou relatif comme paramètre</td></tr><tr id="dabee0dc-b65b-4eb9-a0b0-f15813bd0e17"><td id="\}R;" class="" style="width:130px"><code>ls</code></td><td id="znCU" class="" style="width:596px">Affiche le contenu d&#x27;un répertoire</td></tr><tr id="bc97e2c1-d265-442b-b7ce-360fc9117549"><td id="\}R;" class="" style="width:130px"><code>cat</code></td><td id="znCU" class="" style="width:596px">Affiche le contenu d&#x27;un fichier</td></tr><tr id="b03d1ff5-872b-46f3-bc65-1741cd68cb7d"><td id="\}R;" class="" style="width:130px"><code>touch</code></td><td id="znCU" class="" style="width:596px">Créer un fichier</td></tr><tr id="700fb086-e951-4576-ad77-bcfbc1cc82b5"><td id="\}R;" class="" style="width:130px"><code>echo</code></td><td id="znCU" class="" style="width:596px">Affiche une chaîne de caractères ou une variable</td></tr><tr id="edfa61db-04b5-4de3-b416-92880022389e"><td id="\}R;" class="" style="width:130px"><code>mkdir</code></td><td id="znCU" class="" style="width:596px">Créer un nouveau répertoire</td></tr><tr id="250dbb10-8c33-44b8-a93c-57f9af8d3ed5"><td id="\}R;" class="" style="width:130px"><code>subl file.txt</code></td><td id="znCU" class="" style="width:596px">Ouvrir le fichier avec Sublim Text</td></tr><tr id="da4d1b57-c594-4dcd-a661-ba91e010689f"><td id="\}R;" class="" style="width:130px"><code>code .</code></td><td id="znCU" class="" style="width:596px">Ouvrir le dossier dans VS Code</td></tr><tr id="e7f898af-1b18-4041-b162-f232195b98db"><td id="\}R;" class="" style="width:130px"><code>rmdir</code></td><td id="znCU" class="" style="width:596px">Supprimer un répertoire vide</td></tr><tr id="f0d6b08c-1c31-4c9f-98f3-6f1dba6477e9"><td id="\}R;" class="" style="width:130px"><code>rm</code></td><td id="znCU" class="" style="width:596px">Supprimer un fichier</td></tr><tr id="82c29459-f5b9-435a-a759-fb03899ff558"><td id="\}R;" class="" style="width:130px"><code>rm -rf folder</code>  </td><td id="znCU" class="" style="width:596px">🚨🚨🚨🚨 Supprime récursivement tout le contenu d’un dossier</td></tr><tr id="2125ccdd-8079-44a1-a3f9-c7c3fabbccf4"><td id="\}R;" class="" style="width:130px"><code>chmod u+x f.sh </code></td><td id="znCU" class="" style="width:596px">Autorise l’exécution du fichier <code>f.sh</code></td></tr><tr id="2009b935-0251-4139-93aa-b1858b982a01"><td id="\}R;" class="" style="width:130px"><code>./file.sh</code></td><td id="znCU" class="" style="width:596px">Exécute le fichier <code>file.sh</code> (ne pas oublier <code>./</code> devant !)</td></tr></tbody></table><h2 id="3175bc3f-13ec-4701-8bf8-9e3d18428fe9" class="">Output et chaînage de commandes</h2><p id="a82e7a72-ea08-41bd-83c8-3d80a492b443" class=""><strong>Exécuter plusieurs commandes sans interruption</strong></p><p id="69a62e2c-39c3-4aba-887f-ec45f914f80d" class="">Pour exécuter plusieurs commandes Linux successivement (de façon synchrone), sans que l’exécution (ou une erreur) d’une commande influence  l’exécution d’une autre</p><pre id="5f000545-4b7a-464f-8061-5dc45e42e9d8" class="code"><code>{command1} ; {command2} ; {command3}</code></pre><p id="16cdd0f0-3988-4f47-91fa-299de0a3843e" class=""><strong>Exécuter plusieurs commandes mais avec interruption si une erreur est levée</strong></p><pre id="3fd8e406-c289-4fc7-94d2-41e8b7071ec0" class="code"><code># Si command1 échoue, command1 et command2 ne sont pas exécutées
+# De même, si command2 échoue, command3 n&#x27;est pas executée
+{command1} &amp; {command2} &amp; {command3}</code></pre><p id="07ebc900-b753-4bd2-86eb-884102d1de76" class=""><strong>Exécuter une commande seulement si la précédente échoue</strong></p><pre id="c283a6ae-6099-431e-925c-73092c6c3601" class="code"><code>{command1} || {command2}</code></pre><h2 id="5d86e5fe-890d-4588-b880-bd6672cf81c5" class="">Redirection de commandes</h2><p id="7ef2e397-17dd-4a43-adb5-ffbbdfde40ac" class=""><strong>Redirection d’output d’une commande en tant qu’input d’une seconde commande</strong></p><p id="4e3640ef-7719-44fa-8152-3b9e2d433286" class="">On veut souvent rediriger l’output du commande en tant qu’input de la commande suivante. On le faire ainsi : </p><pre id="df4752b3-3ef4-49a5-b2d8-c6f9f793371f" class="code"><code>&lt;first_command_with_output} | {second_command_with_input}</code></pre><p id="1f6d94a4-4c82-4ec9-a9c6-6efafc89801e" class="">On peut par exemple chercher l’occurence de la chaîne de caractère “DB_PASSWORD” dans le fichier <code>Dockerfile</code> :</p><pre id="a9cc5258-e0c5-4f78-b6f9-1b24f3469e14" class="code"><code>cat Dockerfile | grep DB_PASSWORD</code></pre><p id="0cb59dd7-c3d8-4e49-a957-36a984d587f0" class=""><strong>Écraser le contenu du fichier lors de l’écriture</strong></p><p id="48485218-288f-4b80-afdb-f924442ae77d" class="">Dans un shell, le caractère <code>&gt;</code> peut être utilisé pour rediriger la sortie d&#x27;une commande vers un fichier<mark class="highlight-gray_background"><strong> </strong></mark><mark class="highlight-red_background"><strong>(et en écraser le contenu)</strong></mark></p><pre id="e5519b23-cb03-42b0-b78b-e2f8bd950da5" class="code"><code>{command_with_output} &gt; {filename}
+# Par exemple
+cat Dockerfile &gt; Dockerfile2</code></pre><p id="cf770aef-e6e5-4336-b53d-38ce25e7fa5b" class=""><strong>Conserver le contenu du fichier lors de l’écriture (=mode append)</strong></p><p id="b94ef6c4-e602-41be-94ca-04f34abdae00" class=""><mark class="highlight-red_background"><strong>Pour activer le mode </strong></mark><mark class="highlight-red_background"><strong><em>append</em></strong></mark>, et ajouter le contenu de l’output à la fin du fichier sans écraser les données déjà présentes, il faut utiliser un double chevron <code>&gt;&gt;</code></p><pre id="3f103a12-cf7e-4da9-afb5-331a6c705e81" class="code"><code>{command_with_output} &gt;&gt; {filename}
+# Par exemple pour ajouter une dépendance sans écraser les précédentes
+echo &quot;pandas&gt;=1.1.2&quot; &gt;&gt; requirements.txt</code></pre><h1 id="1898a315-1eda-4ba3-a464-415a50cf4f89" class="">Création et gestion de conteneurs</h1><hr id="7f4ac3e6-b45b-4ec6-a4e1-aee41f3bd642"/><h2 id="93576fa5-a061-4b28-8aae-128c29a51e64" class="">Cycle de vie des conteneurs</h2><h3 id="7e1de3c7-913a-4824-8536-54737bd2dcfa" class="">Principales commandes</h3><table id="8b9090aa-3a51-4687-8fe1-cab80aed00f9" class="simple-table"><tbody><tr id="ff604dde-5da9-4bed-8d07-28f05e48f1d4"><td id="h|pJ" class="" style="width:292px"><code>docker create [image] [command]</code></td><td id="L}dj" class="" style="width:552.859375px">crée le container sur la base de l’image spécifiée</td></tr><tr id="ded54777-2ba4-4cd5-8bd0-7ec730d186e2"><td id="h|pJ" class="" style="width:292px"><code>docker run [image] </code></td><td id="L}dj" class="" style="width:552.859375px"><code>create</code> + <code>start</code></td></tr><tr id="d2ec6f6b-8c4f-48c2-80cd-84fa8e309d1b"><td id="h|pJ" class="" style="width:292px"><code>docker rename [container] [new_name]</code></td><td id="L}dj" class="" style="width:552.859375px">renomme le conteneur</td></tr><tr id="3b9f93f4-cab1-44f4-a82c-3a079de12482"><td id="h|pJ" class="" style="width:292px"><code>docker update [container]</code></td><td id="L}dj" class="" style="width:552.859375px">met à jour la configuration du container</td></tr><tr id="9b59d2ff-2854-4dbe-a33a-a38c8c3c1fdd"><td id="h|pJ" class="" style="width:292px"><code>docker start [container]</code></td><td id="L}dj" class="" style="width:552.859375px">lance le conteneur</td></tr><tr id="e4446984-8129-43c9-9ec4-5e4094ec4dd1"><td id="h|pJ" class="" style="width:292px"><code>docker stop [container]</code></td><td id="L}dj" class="" style="width:552.859375px">stop le conteneur “gracefully” (SIGTERM au main process + SIGKILL 10s après)</td></tr><tr id="13ce244a-f40a-4678-aa0a-5a1a339b87c9"><td id="h|pJ" class="" style="width:292px"><code>docker kill [container]</code></td><td id="L}dj" class="" style="width:552.859375px">kill (SIGKILL) le conteneur</td></tr><tr id="fcef4989-0ee7-4158-b825-e497548ad7be"><td id="h|pJ" class="" style="width:292px"><code>docker restart [container]</code></td><td id="L}dj" class="" style="width:552.859375px"><code>stop</code> + <code>start</code></td></tr><tr id="6a8e5ccb-5eda-44a3-ad04-24c74b07aca0"><td id="h|pJ" class="" style="width:292px"><code>docker pause [container]</code></td><td id="L}dj" class="" style="width:552.859375px">met le conteneur en pause</td></tr><tr id="de247b7d-b173-4ac1-8cdb-4e1da1901771"><td id="h|pJ" class="" style="width:292px"><code>docker unpause [container]</code></td><td id="L}dj" class="" style="width:552.859375px">suspend la pause du conteneur</td></tr><tr id="03128318-5d37-4240-a9f3-17b547e6eabe"><td id="h|pJ" class="" style="width:292px"><code>docker rm [container]</code></td><td id="L}dj" class="" style="width:552.859375px">détruit / supprime le conteneur</td></tr><tr id="2912a509-25e1-4b33-9298-a74d9b748736"><td id="h|pJ" class="" style="width:292px"><code>docker rm -f [container]</code></td><td id="L}dj" class="" style="width:552.859375px"> <code>kill</code> + <code>rm</code> (<code>-f</code> = force option : suppression en cours d’exécution) </td></tr></tbody></table><h3 id="20b5393c-1a0e-465d-970c-a55524b04878" class="">A propos du cycle de vie des conteneurs</h3><ul id="d1acd805-b64c-4fa4-96a6-35f62c46f03c" class="bulleted-list"><li style="list-style-type:disc">Le filesystem du conteneur est créé par <code>docker create</code> et détruit par <code>docker rm</code><ul id="0d894418-0a62-422e-8e61-2baca08d8de1" class="bulleted-list"><li style="list-style-type:circle">Il persiste entre les exécution de <code>start</code> et <code>stop</code></li></ul></li></ul><ul id="649325c1-4007-460f-892b-203100b5028b" class="bulleted-list"><li style="list-style-type:disc">La configuration du conteneur est principalement statique<ul id="fca7a3f0-1061-4609-92c7-06f57c9b2fb3" class="bulleted-list"><li style="list-style-type:circle">On renseigne la plupart des options avec <code>create</code> et <code>run</code></li></ul><ul id="5e4d37be-d783-4daa-a68c-017d6d82532a" class="bulleted-list"><li style="list-style-type:circle"><code>update</code> ne peut changer que quelques paramètres (allocations cpu/ram/IO)</li></ul><ul id="c6757afc-d371-42b4-ae1e-0c205980850f" class="bulleted-list"><li style="list-style-type:circle">Changer d’autres paramètres implique de détruire et re-créer le conteneur</li></ul></li></ul><p id="cd2de39c-201e-47fd-b054-0be6ea144888" class="">
+</p><h2 id="b40f78ea-02ad-4837-88cb-97e9fe6cddef" class="">Créer et exécuter un conteneur avec <code>docker run</code></h2><h3 id="65a7bb16-b34c-45e7-9b66-96e40a40e217" class="">Commande principale</h3><pre id="4e36dfbf-4498-46d2-9b2e-cea4f7b1b8a3" class="code"><code>docker run [options] &lt;image&gt; [arg0, arg1, ...]</code></pre><ul id="236e0d53-cdb6-4453-ad86-10404897740c" class="bulleted-list"><li style="list-style-type:disc">Crée un container (<code>create</code>) et le lance (<code>start</code>)</li></ul><p id="98908561-dc04-47ee-b0b8-d95f0574600f" class=""><strong>Exemples</strong></p><pre id="ca2d8724-1d74-4b5c-8a25-4c3a5cf70ac8" class="code"><code>docker run debian /bin/hostname
+# f0d0720bd373
+
+docker run debian date +%H:%M:%S
+# 17:10:13
+
+docker run debian true ; echo $? (#? renvoie le résultat de la dernière commande)
+# 0
+docker run debian false ; echo $?
+# 1 </code></pre><p id="32630ca1-42db-4dd5-b233-ecbd9b905c10" class="">
+</p><h3 id="a63750bf-72b2-463e-894c-101974020b2d" class="">Premier plan &amp; arrière plan (<em>foreground</em> &amp; <em>detached</em>)</h3><ul id="38f55ad9-6e16-4bd5-a8a9-4d23a5536fb7" class="bulleted-list"><li style="list-style-type:disc">Par défaut l’exécution est au premier plan (ie mode foreground)<ul id="25c17534-fb26-44bc-a1f4-5c62e5ec9fa7" class="bulleted-list"><li style="list-style-type:circle"><code>stdout</code> et <code>stderr</code> sont re-dirigés vers le terminal</li></ul><ul id="cc215e88-8120-4938-97e7-e1794b3db5e9" class="bulleted-list"><li style="list-style-type:circle"><code>docker run</code> propage l’exit code du process principal propagates the exit code of the main process</li></ul></li></ul><ul id="36774c97-1712-45be-8d33-fe830a7a112d" class="bulleted-list"><li style="list-style-type:disc">Avec l’option <code>-d</code> le container est exécuté en arrière plan / ou mode détaché (<em>detached mode</em>)<ul id="a466a977-225f-48ab-949b-08099d4ea580" class="bulleted-list"><li style="list-style-type:circle">Affiche l’ID du conteneur</li></ul><ul id="84d32aa1-bb7b-47f6-b0b9-90a0409d713c" class="bulleted-list"><li style="list-style-type:circle">Retourne à l’invite de commande ayant servie à exécuter <code>docker run -d</code> immédiatement</li></ul></li></ul><p id="66e04513-cdb7-410c-a927-12a7a3f62695" class=""><strong>Exemple</strong></p><pre id="91c4a727-d525-4ee1-b9b9-2db3eb6c2b38" class="code"><code>docker run debian date
+# Sat Jan 15 17:32:07 UTC 2023
+
+docker run -d debian date
+# 1d725c36fa72.....
+
+docker logs 4cbdef
+# Sat Jan 15 17:32:17 UTC 2023</code></pre><p id="654b84b6-4098-411d-94b4-2dd3b75dda64" class="">
+</p><h3 id="d21ca741-cec4-4592-af7b-da803293e7d6" class="">Mode interactif (TTY allocation)</h3><ul id="22f9031b-c527-47e6-b57a-0660d5e1c23c" class="bulleted-list"><li style="list-style-type:disc">Par défaut les conteneurs sont non interactifs<ul id="e6d28ed6-91d9-41b4-b391-6e011a558e8b" class="bulleted-list"><li style="list-style-type:circle">stdin est fermé immédiatement</li></ul><ul id="34af7056-f1ab-43cf-afa9-9b7fbfc3d9de" class="bulleted-list"><li style="list-style-type:circle">Les signaux envoyés depuis le terminal ne sont pas transférés : <pre id="5efad0c9-53b7-4ab1-be27-1217eaf2501f" class="code"><code>docker run -t debian bash
+root@1d725c36fa72:/# date
+ˆC # (^C détache le terminal, mais le conteneur continue son exécution en arrière plan)</code></pre></li></ul></li></ul><ul id="28bcdc43-96f8-47bb-bf49-cd60e3a68a59" class="bulleted-list"><li style="list-style-type:disc"> <code>-i</code> permet une exécution interactive<ul id="d13a6bd4-b366-4577-9084-186128c27073" class="bulleted-list"><li style="list-style-type:circle">stdin est utilisable</li></ul><ul id="da8eb61b-46af-4f60-ae75-4667cfbd9a5d" class="bulleted-list"><li style="list-style-type:circle">Les signaux envoyés depuis le terminal sont transférés</li></ul><pre id="d31e0260-09d6-43dd-aeae-28c77b7bb21d" class="code"><code>docker run -t -i debian bash
+root@1d725c36fa72:/# date
+root@1d725c36fa72:/# ˆC</code></pre><p id="eca54ea7-5100-4600-bf0e-2ef7ddeec5d6" class="">
+</p></li></ul><h3 id="e9f2609b-95d6-43b3-95e3-73cacc4129af" class="">Override des défauts</h3><ul id="c018cff7-b4ec-486f-b3db-fdca14f48e6b" class="bulleted-list"><li style="list-style-type:disc">User (<code>-u</code>)<pre id="cd087ac2-3b74-4afc-bba0-c389cf1b21c9" class="code"><code>docker run debian whoami
+# root
+docker run -u someone debian whoami
+# someone</code></pre></li></ul><ul id="b5e8c208-351c-4aea-a640-9c283eace01a" class="bulleted-list"><li style="list-style-type:disc">Working directory (<code>-w</code>)<pre id="176b201d-7c1c-4c1f-b652-2ae274ee5171" class="code"><code>docker run debian pwd
+# /
+docker run -w /opt debian pwd
+# /opt</code></pre></li></ul><ul id="6976381d-890c-4825-9053-ee505e232259" class="bulleted-list"><li style="list-style-type:disc">Variables environnementales<pre id="09579ebc-a146-4b02-a8c7-01cc25ae0e0e" class="code"><code>docker run debian sh -c &#x27;echo $VAR1 $VAR2&#x27;
+# 
+docker run -e VAR1=bonjour -e VAR2=docker debian sh -c &#x27;echo $VAR1 $VAR2&#x27;
+# bonjour docker</code></pre></li></ul><p id="2bc7d318-4707-464e-8914-327ad94566bf" class="">
+</p><h3 id="0cca8eef-fb80-4dcf-a8ac-05b69f8d00a0" class="">Assigner un nom au conteneur</h3><ul id="055b084e-4b85-44b2-8f65-8c9b35dbd193" class="bulleted-list"><li style="list-style-type:disc">Par défaut un nom aléatoire est généré</li></ul><ul id="672d817f-a3cc-4b6d-9574-c233d75d20e1" class="bulleted-list"><li style="list-style-type:disc">Il faut utiliser l’option <code>--name</code> pour le spécifier<ul id="5246c1d5-67b1-4e2e-8157-eab67cfec837" class="bulleted-list"><li style="list-style-type:circle">Les noms doivent être uniques</li></ul><ul id="160cfaf6-3593-4751-8084-862b54d36450" class="bulleted-list"><li style="list-style-type:circle">On peut vérifier le nom avec <code>docker ps</code></li></ul><pre id="beaa35ca-f3b7-4bac-8c68-f57043a731a2" class="code"><code>docker run -d -t --name my-container debian
+#749abb810b3bc75ac29faacc8e1d21c0e31d21c299718362d20011b6e8ac5b1f
+
+docker ps
+# CONTAINER ID   IMAGE             COMMAND   CREATED          STATUS          PORTS     NAMES
+# 749abb810b3b   debian            &quot;bash&quot;    15 seconds ago   Up 14 seconds             my-container</code></pre></li></ul><p id="25ec1a5c-c0d1-44e1-8343-100c46c87079" class="">
+</p><h3 id="adead43c-8c34-42ff-b5c7-5d1d484ca1fb" class="">Suppression automatique après l’exécution</h3><ul id="0892f439-921b-49c8-ba46-3ac046b16367" class="bulleted-list"><li style="list-style-type:disc">Par défaut les conteneurs existent encore après la commande d’exit : <pre id="eef2478a-adc5-49ef-b42e-8b065824421d" class="code"><code>docker run --name date-check debian date # première exécution
+# ...
+docker start date-check # deuxième exécution
+# ...
+
+docker logs date-check
+# première ligne de log (première exécution)
+# deuxième ligne de log (deuxième exécution)
+
+docker rm date-check
+# ...
+
+docker start date-check
+# Error response from daemon: No such container: date-check
+# Error: failed to start containers: date-check</code></pre></li></ul><ul id="0434b63a-3280-4f23-b41d-6f7312d0c344" class="bulleted-list"><li style="list-style-type:disc">L’option <code>-rm</code> permet de supprimer automatiquement le container après le code d’exit du programme</li></ul><p id="ef283337-a7c9-44ed-92f6-8df355418fdd" class="">
+</p><h3 id="51377e13-1a7e-409e-a3c3-0b2c6b253182" class="">Suppression manuelle</h3><pre id="65322c54-7b28-4850-8235-b17cbbb0e5f7" class="code"><code># Lister les container avec : 
+# l&#x27;option a permet d&#x27;afficher tous les conteneurs (y compris ceux arrêtés)
+docker ps -a 
+# CONTAINER ID   IMAGE             COMMAND                  CREATED          STATUS                        PORTS     NAMES
+# 749abb810b3b   debian            &quot;bash&quot;                   8 minutes ago    Up 8 minutes                            my-container
+# 1d725c36fa72   python:3.9-slim   &quot;bash&quot;                   17 minutes ago   Up 17 minutes                           sweet_euler
+# 90c5a1534e8b   simple-app        &quot;/bin/sh -c &#x27;python …&quot;   17 minutes ago   Exited (130) 17 minutes ago             objective_curran
+
+# Suppression du conteneur d&#x27;id 749abb810b3b
+docker rm 749abb810b3b
+
+# Suppression du conteneur my-container
+docker rm my-container
+
+# Suppression de tous les container arrêtés
+docker container prune 
+
+
+#  A utiliser de manière parcimonieuse !!!!!!!
+docker stop $(docker ps -aq)
+docker rm $(docker ps -aq)</code></pre><p id="c4e47a5c-ec65-414b-9a66-3ae4e18cc307" class="">
+</p><h2 id="732d0806-2e19-4751-b042-2a8107cd62be" class="">Inspecter les conteneurs</h2><table id="b91aab8b-aebb-44e7-af87-b3b0b15c3742" class="simple-table"><tbody><tr id="5a28d467-2206-47fa-b012-ffdead0232eb"><td id="dV&lt;}" class="" style="width:220px"><code>docker ps</code></td><td id="PuIC" class="" style="width:501px">liste les conteneurs en cours d’exécution</td></tr><tr id="28543f8b-936b-4203-8ffc-72ddd0053ba4"><td id="dV&lt;}" class="" style="width:220px"><code>docker ps -a</code></td><td id="PuIC" class="" style="width:501px">liste tous les conteneurs</td></tr><tr id="a83e6b61-a689-4dba-9f4f-43d001c037dc"><td id="dV&lt;}" class="" style="width:220px"><code>docker logs [container]</code></td><td id="PuIC" class="" style="width:501px">affiche les logs du container (stdout+stderr)</td></tr><tr id="45b763fd-f1e6-42db-9648-af82c6f66b64"><td id="dV&lt;}" class="" style="width:220px"><code>docker logs -f [container]</code></td><td id="PuIC" class="" style="width:501px">affiche la queue des logs du container (et suit les logs)</td></tr><tr id="0113359c-bc52-4df2-8f81-d241a14ee010"><td id="dV&lt;}" class="" style="width:220px"><code>docker top [container]</code></td><td id="PuIC" class="" style="width:501px">liste les processes exécutés dans un container (comme <code>ps</code> pour unix)</td></tr><tr id="6c970e61-9030-4a6d-a86e-1e73b627a54d"><td id="dV&lt;}" class="" style="width:220px"><code>docker stats [container]</code></td><td id="PuIC" class="" style="width:501px">affiche les statistiques d’usage en direct</td></tr><tr id="b253413d-caf9-443d-8d92-5a0b5cc18883"><td id="dV&lt;}" class="" style="width:220px"><code>docker diff [container]</code></td><td id="PuIC" class="" style="width:501px">Affiche les différences avec l’images (fichiers modifiés)</td></tr><tr id="b00c207f-d34c-48cd-ba33-92322c66be85"><td id="dV&lt;}" class="" style="width:220px"><code>docker port [container]</code></td><td id="PuIC" class="" style="width:501px">liste les mappings de ports</td></tr><tr id="311ce479-05dd-4286-a003-026b7de30a78"><td id="dV&lt;}" class="" style="width:220px"><code>docker inspect [container]</code></td><td id="PuIC" class="" style="width:501px">affiche des infos de bas niveau au format JSON</td></tr></tbody></table><h2 id="6855316b-060d-45f5-8bfa-ec3b9d56f977" class="">Interagir avec un conteneur</h2><table id="6b859fd2-8c7c-4264-9d91-86b641799a25" class="simple-table"><tbody><tr id="bebed393-ed6c-4044-93ca-2c34e9aa32f2"><td id="?eRW" class="" style="width:284px"><code>docker attach [container]</code></td><td id="TJOu" class="" style="width:478px">attache le container à l’invite de commande </td></tr><tr id="b3366515-ec2a-476f-a522-83d1d2217fef"><td id="?eRW" class="" style="width:284px"><code>docker cp src/. [container]:/target</code></td><td id="TJOu" class="" style="width:478px">copie les fichiers du dossier src l’hôte vers le dossier target du container</td></tr><tr id="6ab28471-c5b9-4316-99f7-0de8a8d042d7"><td id="?eRW" class="" style="width:284px"><code>docker cp [container]:/src/. target</code></td><td id="TJOu" class="" style="width:478px">copie les fichiers du dossier src du container vers le dossier target de l’hôte</td></tr><tr id="1d8717e1-1fb9-43b0-bedb-1c11c5b69201"><td id="?eRW" class="" style="width:284px"><code>docker export [container]</code></td><td id="TJOu" class="" style="width:478px">exporte le contenu du conteneur au format .tar</td></tr><tr id="62aa5451-2abd-4973-a703-e54a817a0cbf"><td id="?eRW" class="" style="width:284px"><code>docker exec [container] [args]</code></td><td id="TJOu" class="" style="width:478px">exécute une dans un container</td></tr><tr id="46bcf436-b8cb-4f73-a24f-81de7d75a463"><td id="?eRW" class="" style="width:284px"><code>docker wait [container]</code></td><td id="TJOu" class="" style="width:478px">attend que le container termine son exécution et renvoie son exit code</td></tr><tr id="d44a6842-89db-47d5-9e17-a6b440ed3c3a"><td id="?eRW" class="" style="width:284px"><code>docker commit [container] [image]</code></td><td id="TJOu" class="" style="width:478px">commit une nouvelle image sur la base du container (=snapchot)</td></tr></tbody></table><h1 id="35c2dbe0-aa15-4084-ba33-76d7e6a010db" class="">Volumes</h1><hr id="d2d9eafd-5b8e-406f-a363-5be28ecf6246"/><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="864ee228-d544-41a9-9707-e7861b4bd8e8"><div style="font-size:1.5em"><span class="icon">💜</span></div><div style="width:100%"><strong>Voir [Docker] II. Exercices - 3. Persistance des données
+</strong>Qui contient un tutoriel beaucoup plus détaillé</div></figure><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="8fea1add-8478-4350-82e5-390e1ad7ee52"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">Les conteneurs ont un filesystem evanescent, on perd toutes les données lorsque l’on détruit le conteneur. Les volumes permettent de stocker les données de façon permanentes sur la machine hôte, et également de fournir des inputs aux containers.</div></figure><h2 id="11b377ac-dc0f-4217-9e80-8aa389f20526" class=""><em>Bind-Mount </em></h2><pre id="dbd764f0-09e0-4051-a2c2-a6794a13b4eb" class="code"><code>docker run -v /[hostpath]:/[ctrpath][:ro] ...</code></pre><ul id="9e8a41cb-f3a9-4fad-a863-9a6e849eb1ae" class="bulleted-list"><li style="list-style-type:disc"><em>Mount </em>le dossier hostpath de l’hôte vers le dossier /ctrpath du conteneur<ul id="aa2be76b-2673-4838-bc35-0a5c74901851" class="bulleted-list"><li style="list-style-type:circle">Avec l’option <code>ro</code>, cette opération est read-only</li></ul></li></ul><ul id="1c0caef2-6640-461f-8d2d-f90d8fb6ec13" class="bulleted-list"><li style="list-style-type:disc">Cela permet de stocker des données de manière persistantes a l’extérieur du container</li></ul><ul id="150f68cb-4c47-49c3-a126-857c1b81f7a1" class="bulleted-list"><li style="list-style-type:disc">De fournir au container des inputs (données, fichiers de configuration)</li></ul><ul id="55b281fc-5325-442d-86f1-943bd9689082" class="bulleted-list"><li style="list-style-type:disc">D’éditer le code qui est exécuté dans un conteneur, sans arrêter le conteneur</li></ul><ul id="8a263a57-8678-401d-b3cb-41dcef5acc91" class="bulleted-list"><li style="list-style-type:disc">Cette option crée le dossier /ctrpath automatiquement</li></ul><p id="58188145-0aa9-46e8-9f1b-aae7799b1a0b" class=""><strong>Exemples</strong></p><pre id="cd63ca87-4e0f-4d07-855c-34bde8673ab3" class="code"><code>docker run --rm -t -i -v /tmp/persistent:/persistent debian
+root@1d725c36fa72:/ echo &quot;bonjour docker&quot; &gt;/persistent/foo
+root@1d725c36fa72:/ exit
+
+cat /tmp/persistent/foo
+#bonjour docker
+
+docker run --rm -t -i -v /tmp/persistent:/persistent debian
+root@1d72eazezfazz:/ cat /persistent/foo
+# bonjour docker</code></pre><h2 id="7dc50ce4-c6df-44bd-b192-0c149307f573" class=""><em>Named Volumes</em></h2><ul id="5a42d7f3-db9b-4a6b-a7fa-889ce91a5885" class="bulleted-list"><li style="list-style-type:disc">Ils sont stockée dans le dossier <code>/var/lib/docker</code></li></ul><ul id="cad4cb04-fcdc-46e5-b8dd-b97584923493" class="bulleted-list"><li style="list-style-type:disc">Il faut utiliser la commande <code>docker volume</code> pour les gérer<pre id="fca52092-06e7-492d-ba74-3e5d9eb6bfae" class="code"><code>docker volume create my-first-volume
+# my-first-volume
+
+docker volume ls
+# DRIVER    VOLUME NAME
+# local     my-first-volume
+
+docker run --rm -t -i -v my-first-volume:/vol busybox
+# Unable to find image &#x27;busybox:latest&#x27; locally
+# latest: Pulling from library/busybox
+# 3f4d90098f5b: Pull complete
+# Digest: sha256:3fbc632167424a6d997e74f52b878d7cc478225cffac6bc977eedfe51c7f4e79
+# Status: Downloaded newer image for busybox:latest
+# / # echo bonjour &gt; /vol/file_1 🚨 (à écrire)
+
+docker volume inspect my-first-volume|grep Mountpoint
+# &quot;Mountpoint&quot;: &quot;/var/lib/docker/volumes/my-first-volume/_data&quot;,
+
+docker run --rm -t -i -v my-first-volume:/vol busybox cat /vol/file_1
+# bonjour
+
+
+docker volume rm my-first-volume
+# my-first-volume</code></pre><pre id="6bb28bcd-5dc1-4980-bc81-7f0d0c841a33" class="code"><code># On peut aussi utiliser
+docker run
+--mount &#x27;type=bind,src=/hostpath,dst=/ctrpath[:ro] ...&#x27;</code></pre></li></ul><p id="634e6f16-b37e-4f09-b45d-66685d4a25c2" class="">
+</p><h2 id="a3f2e3b4-104b-428d-beaa-5f84cba091b4" class="">Différences à l’initialisation entre <em>Bind-Mount</em> &amp; <em>Volumes</em></h2><ul id="5bd3626a-6d01-4d39-bff2-559ab7a98ee2" class="bulleted-list"><li style="list-style-type:disc">Les <em>bind mount </em>sont créés vides</li></ul><ul id="8efa7000-cfa8-4fa3-b062-663ad15a01ba" class="bulleted-list"><li style="list-style-type:disc">Les volumes sont créés avec une copie du contenu de l’image à l’initialisation</li></ul><h1 id="488a6ee6-10bc-4785-b164-b16c09495ca5" class="">Réseaux</h1><hr id="ef58aa58-1ddd-487b-888f-c99f34b14a0a"/><h2 id="da239ee5-fe62-4d98-aad5-a96368d53c36" class="">Gestion de réseaux</h2><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="a9c6c6e1-e639-458d-b7a0-8986b8627774"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">Par défaut, tous les conteneurs sont connectés au réseau principal (<code>bridge</code>, 172.17.0.0/16)</div></figure><ul id="2d1fb507-b549-479f-8446-2192db78ceba" class="bulleted-list"><li style="list-style-type:disc">L’utilisateur peut ajouter d’autres réseaux avec :<pre id="921ef5f1-a8e4-469e-b699-a9fd41c57d12" class="code"><code>docker network create [network]</code></pre></li></ul><ul id="d895efea-1f36-4599-808e-a341b0275bc7" class="bulleted-list"><li style="list-style-type:disc">Les conteneurs peuvent être connectés au réseau : <pre id="6e37396c-e9cc-422c-b75a-c36bc7c470a9" class="code"><code>docker run [...] --net=[network]</code></pre></li></ul><ul id="cb070b9f-07d0-4ac7-b654-62193410f5d5" class="bulleted-list"><li style="list-style-type:disc">Les conteneurs peuvent être dynamiquement connectés ou déconnectés du réseau :<pre id="ca869201-f41c-4073-8b5e-e3dbd0e677b9" class="code"><code>docker network connect [network] [container]
+docker network discconnect [network] [container]</code></pre></li></ul><p id="3b8f2ba4-77d8-4553-87f2-0ab619c2aca5" class="">
+</p><h2 id="9f09aca4-016d-47e1-8f94-e7f4b6576640" class="">Option <code>—publish</code> de <code>docker run</code> (ou <code>-p</code>)</h2><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="158ff713-f39e-4626-8820-0b8ac78c7cf1"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">Les conteneurs sont déployés dans un réseaux privés et ne sont pas atteignables depuis l’extérieur. L’option <code>-p</code> de <code>docker run</code> permet de rediriger les connections TCP vers le port de l’hôte vers le port du container.
+La socket lie 0.0.0.0 (toutes les interfaces) par défaut ou seulement à <code>ipaddr</code> si cette dernière est spécifiée</div></figure><pre id="5c205176-4ef1-4dbe-8725-69111d083177" class="code"><code>docker run -p [ipaddr:][hostport]:[containerport]</code></pre><p id="add0bb05-e51a-47fb-80e9-176aab5bef26" class="">
+</p><h1 id="61ec7142-92ca-4cae-ba1c-656ef4c37414" class="">Ressources supplémentaires</h1><hr id="f2b5a9eb-d3aa-4334-9c0c-b7c6de52d279"/><ul id="a0ced494-94e2-48d8-8689-2f1f803b2517" class="bulleted-list"><li style="list-style-type:disc"><strong>Tutoriel Ubuntu : </strong><strong><em>Command Line For Begginers</em></strong>
+<a href="https://ubuntu.com/tutorials/command-line-for-beginners#1-overview">https://ubuntu.com/tutorials/command-line-for-beginners#1-overview</a></li></ul><p id="2f49a2c3-fb30-4beb-8065-fff75d99a06b" class="">
+</p><ul id="2ccce200-4ae1-4228-addd-b339de55027b" class="bulleted-list"><li style="list-style-type:disc"><strong>Documentation officielle Docker : </strong><code><strong>Docker run
+</strong></code><a href="https://docs.docker.com/engine/reference/run/">https://docs.docker.com/engine/reference/run/</a></li></ul><p id="c59c5e55-a32a-4cdb-ac47-3a06832c5b0e" class="">
+</p></div></article></body></html>

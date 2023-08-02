@@ -1,0 +1,28 @@
+Réponses aux Question de l'exercice 1 :
+
+L'option -t de la commande build dans Docker sert à spécifier une étiquette à attribuer à l'image Docker, ce qui permet de nommer une image.
+
+L'option -d de la commande run dans Docker permet d'exécuter un conteneur en arrière plan, cela sert notamment à continuer d'utiliser l'invite de commande actuel sans en ouvrir un autre.
+
+
+
+Dans le Dockerfile, les commandes utilisé sont les suivant :
+
+#Création de l'image Docker basé sur celle de python 3.9-slim (slim : version légère de python contenant seulement l'essentiel pour exécuter des applications Python.
+FROM python:3.9-slim
+
+
+#Attribution du répertoire de travail à l'intérieur du conteneur. Ainsi toute les commandes seront maintenant exécutées en rapport à ce répertoire (opt/demo).
+WORKDIR /opt/demo/
+
+
+#Va aller copier le contenu du répertoire nommé "app" et le "." est pour copier tout le contenu du répertoire.
+COPY /app .
+
+
+#Lors de l'exécution du fichier, cette commande sert à installer toutes les bibliothèque python spécifiées dans le fichier "requirements.txt".
+RUN pip install -r requirements.txt
+
+
+#Exécute le script "app.py" lorsque la commande sera lancé.
+ENTRYPOINT python app.py

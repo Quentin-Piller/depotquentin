@@ -1,0 +1,705 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>[Docker] I. Exercices</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="2f73fb39-04cd-45c2-bd71-5deca249362c" class="page sans"><header><h1 class="page-title">[Docker] I. Exercices</h1><p class="page-description"></p></header><div class="page-body"><nav id="2457f9d1-1243-47e2-a40a-50c074fd4a55" class="block-color-gray table_of_contents"><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#d194b9d8-18fb-4eb2-b92f-d00c9a6bb7c5">1. Tutoriel officiel : “Part 2 <strong><strong>Containerize an application”</strong></strong></a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#da9782ce-0f53-4577-9e03-6dde00b647d1">2. Créer une image sur la base d’un Dockerfile</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#e3e809e7-bf23-4891-b926-92f0e9c2221c">Conteneurisation d’un script</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#a602d796-0908-4c51-836f-b1afb0b100d2">Conteneurisation d’un serveur HTTP</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#7bf75ae8-8083-42b5-b5f1-a2617b1945c2">3. Déployer une APP localement</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#bbeeeae9-de9f-46cc-b349-3063e4773176">Création de l’app</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#ab74ee26-32cc-4396-bfee-f63013982252">Questions</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#f9b54909-79d8-4a53-b7ed-a696d163edf7">4. Nettoyer intelligemment l’environnement de travailler</a></div></nav><h2 id="d194b9d8-18fb-4eb2-b92f-d00c9a6bb7c5" class="">1. Tutoriel officiel : “Part 2 <strong><strong>Containerize an application”</strong></strong></h2><hr id="9283bd6b-bf9e-4d02-bd90-dea919812c7a"/><ul id="a977cdf8-696a-4caf-a43c-0b9d44ad337c" class="bulleted-list"><li style="list-style-type:disc">Suivre la partie 2 du tutoriel officiel<figure id="5cde7fe9-b26d-4c5b-9e0f-137bdf8fb264"><a href="https://docs.docker.com/get-started/02_our_app/" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Containerize an application</div><div class="bookmark-description">Follow this step-by-step guide to learn how to create and run a containerized application using Docker</div></div><div class="bookmark-href"><img src="https://docs.docker.com/assets/favicons/docs@2x.ico" class="icon bookmark-icon"/>https://docs.docker.com/get-started/02_our_app/</div></div><img src="https://docs.docker.com/assets/images/docs@2x.png" class="bookmark-image"/></a></figure></li></ul><ul id="cb0a009c-b35b-46a3-9342-d6c715e7cd74" class="bulleted-list"><li style="list-style-type:disc">Copier / Coller le dossier <code>app</code>  (avec vos ajouts) dans un dossier <code>docker-get-started-2-app</code> dans le repository. Add/Commit/Push </li></ul><h2 id="da9782ce-0f53-4577-9e03-6dde00b647d1" class="">2. Créer une image sur la base d’un Dockerfile</h2><hr id="af6965ac-c7f1-43c0-a0f0-d36c1df12feb"/><h3 id="e3e809e7-bf23-4891-b926-92f0e9c2221c" class="">Conteneurisation d’un script</h3><ul id="0ecd3719-a7ac-4e3e-a3cc-2aec2261a34a" class="bulleted-list"><li style="list-style-type:disc">À l’aide du langage de programmation de votre choix, créer une image <code>check-chapter</code> qui contient un script : <ul id="5ca8a12d-214b-4b1b-960b-0ef864c4cd3c" class="bulleted-list"><li style="list-style-type:circle">faisant une requête GET sur l’URL : <a href="http://www.volonte-d.com/">http://www.volonte-d.com/</a> </li></ul><ul id="12d8df87-bd0f-436f-8a32-a185bfeba6d7" class="bulleted-list"><li style="list-style-type:circle">affichant un message indiquant si la chaîne de caractères “Chapitre 1089” est présente sur la page et un autre message dans le cas contraire</li></ul></li></ul><ul id="e7afd8f0-8f19-46b7-898e-952d988aadb5" class="bulleted-list"><li style="list-style-type:disc">Créer et exécuter un conteneur sur la base de cette image et vérifier qu’il fonctionne</li></ul><ul id="4c7f258b-4029-47a1-8d5c-6f4cced8856a" class="bulleted-list"><li style="list-style-type:disc">Créer un dossier <code>check-chapter</code> à la racine du repository et y ajouter tout le code nécessaire pour créer l’image dans un sous-dossier <code>script</code>. Add / Commit / Push</li></ul><h3 id="a602d796-0908-4c51-836f-b1afb0b100d2" class="">Conteneurisation d’un serveur HTTP</h3><ul id="6eebc404-ec5b-4a6d-b25d-2c6afda9927e" class="bulleted-list"><li style="list-style-type:disc">Reproduire la démarche précédente, mais cette fois ci le message doit être accessible via un navigateur en accédant à localhost:8000</li></ul><ul id="b8e1cea4-42de-4c24-ab1c-22d0c753c77d" class="bulleted-list"><li style="list-style-type:disc">Ajouter le code dans le dossier <code>check-chapter/webserver</code></li></ul><h2 id="7bf75ae8-8083-42b5-b5f1-a2617b1945c2" class="">3. Déployer une APP localement</h2><hr id="026e7145-9077-4baa-a171-55c9f163b873"/><h3 id="bbeeeae9-de9f-46cc-b349-3063e4773176" class="">Création de l’app</h3><ul id="1cdd3460-1691-49bd-9e35-0883c5172fd7" class="bulleted-list"><li style="list-style-type:disc">Créer un dossier <code>app</code> dans le dossier <code>check-chapter</code> La structure doit être la suivante : <pre id="8d1cc17a-8ab4-4ab1-b95b-cd2f24f8ddc3" class="code"><code>app
+├── Dockerfile
+└── app
+    ├── app.py
+    └── requirements.txt</code></pre></li></ul><ul id="9d6c1077-ef49-45e7-b2ea-eaf91d38ac5f" class="bulleted-list"><li style="list-style-type:disc">Fichier<code>app.py</code><pre id="850f3767-f108-496e-b1c7-f226626fff9f" class="code"><code>from flask import Flask
+
+app = Flask(__name__)
+
+
+@app.route(&quot;/&quot;)
+def hello():
+    return &quot;Hello world&quot;
+
+
+if __name__ == &quot;__main__&quot;:
+    app.run(host=&quot;0.0.0.0&quot;, port=80)</code></pre></li></ul><ul id="2d66e06d-7c9d-4a10-9a72-653352b10eea" class="bulleted-list"><li style="list-style-type:disc">Fichier <code>requirements.txt</code> :<pre id="166f4621-8de4-463d-8fa2-ee1188aa7b6e" class="code"><code>flask</code></pre></li></ul><ul id="f8354bab-fd47-4282-af3a-c6ccbd0bc18d" class="bulleted-list"><li style="list-style-type:disc"><code>Dockerfile</code><pre id="3b5f0c15-5362-41f9-83c3-22eb2e7ce883" class="code"><code>FROM python:3.9-slim
+
+WORKDIR /opt/demo/
+
+COPY /app .
+
+RUN pip install -r requirements.txt
+
+ENTRYPOINT python app.py</code></pre></li></ul><ul id="a48663ff-8a1e-4f3a-ac1a-0a0a74251be4" class="bulleted-list"><li style="list-style-type:disc">Structure du dossier : <pre id="70659f3d-140f-40da-8c7c-41f8dfe05cf8" class="code"><code># docker-1/simple-app
+.
+└── app
+		├── Dockerfile
+    ├── app.py
+    └── requirements.txt</code></pre></li></ul><ul id="f9aa3923-d7d6-40e6-aefb-e2b03f8868c4" class="bulleted-list"><li style="list-style-type:disc">Bâtir l’image et lancer l’app avec :<pre id="5d484c0c-6aa1-49e5-a940-6d9a1feef087" class="code"><code>docker build -t simple-app:latest .
+docker run -d -p 80:80  simple-app:latest</code></pre></li></ul><h3 id="ab74ee26-32cc-4396-bfee-f63013982252" class="">Questions</h3><ul id="8389309e-fe3a-48aa-80ff-4909a7dfb203" class="bulleted-list"><li style="list-style-type:disc">Expliquer le rôle de l’option <code>-t</code> de la commande <code>build</code></li></ul><ul id="689c9c4f-7da1-428e-a9b5-8d5269f6b70f" class="bulleted-list"><li style="list-style-type:disc">Expliquer le rôle de l’option <code>-d</code> de la commande <code>run</code></li></ul><ul id="c4552659-0414-452d-9cc7-b7283067e2fa" class="bulleted-list"><li style="list-style-type:disc">Expliquer les commandes utilisées dans le <code>Dockerfile</code></li></ul><ul id="6ef8793a-93aa-4bd6-89f5-1d9defbcdb42" class="bulleted-list"><li style="list-style-type:disc">Ajouter une route <code>/check-chapter</code> à l’application qui affiche le message tel que décrit dans l’exercice 1</li></ul><ul id="0e9f1c0a-6cc6-40ef-8bfa-11d266c6e55c" class="bulleted-list"><li style="list-style-type:disc">Relancer l’app pour qu’elle soit accessible via le port 8001</li></ul><ul id="8b349de7-2806-478a-96e4-ba97803ead01" class="bulleted-list"><li style="list-style-type:disc">Add / Commit / Push pour sauvegarder le contenu du dossier <code>check-chapter/app</code> contenant l’app</li></ul><h2 id="f9b54909-79d8-4a53-b7ed-a696d163edf7" class="">4. Nettoyer intelligemment l’environnement de travailler</h2><hr id="4bd5d80b-7c16-48f1-bbe3-7f3bbadbb45d"/><ul id="0718ea76-5b0b-4adb-83f2-928e72de5204" class="bulleted-list"><li style="list-style-type:disc">Supprimer toutes les images sauf <code>python:3.9-slim</code></li></ul><ul id="757db4b5-166a-4786-ace7-4b4f1436ae30" class="bulleted-list"><li style="list-style-type:disc">D’après les outputs observés lors des étapes de build, pourquoi ne pas supprimer cette image ? (Indice : on va continuer à utiliser Python)</li></ul></div></article></body></html>
